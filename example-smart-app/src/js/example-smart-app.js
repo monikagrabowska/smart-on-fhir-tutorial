@@ -18,7 +18,7 @@
                         $or: ['http://loinc.org|8302-2',
                               'http://loinc.org|3137-7',
                               'http://loinc.org|29463-7',
-                              'http://loinc.org|3141-9',]
+                              'http://loinc.org|3141-9']
                       }
                     }
                   });
@@ -90,7 +90,7 @@
   function getQuantityValue(ob) {
     if (typeof ob != 'undefined' &&
         typeof ob.valueQuantity != 'undefined' &&
-        typeof ob.valueQuantity.value != 'undefined' {
+        typeof ob.valueQuantity.value != 'undefined') {
           return ob.valueQuantity.value;
     } else {
       return undefined;
