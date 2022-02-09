@@ -15,8 +15,10 @@
                     type: 'Observation',
                     query: {
                       code: {
-                        $or: ['http://loinc.org|8302-2', 'http://loinc.org|29463-7',
-                              'http://loinc.org|39156-5']
+                        $or: ['http://loinc.org|8302-2',
+                              'http://loinc.org|3137-7',
+                              'http://loinc.org|29463-7',
+                              'http://loinc.org|3141-9',]
                       }
                     }
                   });
@@ -35,11 +37,8 @@
             lname = patient.name[0].family.join(' ');
           }
 
-          var height = byCodes('8302-2');;
-          #var systolicbp = getBloodPressureValue(byCodes('55284-4'),'8480-6');
-          #var diastolicbp = getBloodPressureValue(byCodes('55284-4'),'8462-4');
-          var weight = byCodes('29463-7');
-          var bmi = byCodes('39156-5');
+          var height = byCodes('8302-2', '3137-7');
+          var weight = byCodes('29463-7', '3141-9');
 
           var p = defaultPatient();
           p.birthdate = patient.birthDate;
@@ -48,15 +47,8 @@
           p.lname = lname;
           p.height = getQuantityValueAndUnit(height[0]);
           p.weight = getQuantityValueAndUnit(weight[0]);
-          p.bmi = getQuantityValueAndUnit(bmi[0]);
-
-          if (typeof systolicbp != 'undefined')  {
-            p.systolicbp = systolicbp;
-          }
-
-          if (typeof diastolicbp != 'undefined') {
-            p.diastolicbp = diastolicbp;
-          }
+          
+          p.bmi = (getQuantityValue(weight[0]) / (Math.pow((getQuantityValue(height[0]) / 100), 2))).toFixed(1);
 
           ret.resolve(p);
         });
@@ -84,29 +76,22 @@
     };
   }
 
-  function getBloodPressureValue(BPObservations, typeOfPressure) {
-    var formattedBPObservations = [];
-    BPObservations.forEach(function(observation){
-      var BP = observation.component.find(function(component){
-        return component.code.coding.find(function(coding) {
-          return coding.code == typeOfPressure;
-        });
-      });
-      if (BP) {
-        observation.valueQuantity = BP.valueQuantity;
-        formattedBPObservations.push(observation);
-      }
-    });
-
-    return getQuantityValueAndUnit(formattedBPObservations[0]);
-  }
-
   function getQuantityValueAndUnit(ob) {
     if (typeof ob != 'undefined' &&
         typeof ob.valueQuantity != 'undefined' &&
         typeof ob.valueQuantity.value != 'undefined' &&
         typeof ob.valueQuantity.unit != 'undefined') {
           return ob.valueQuantity.value + ' ' + ob.valueQuantity.unit;
+    } else {
+      return undefined;
+    }
+  }
+
+  function getQuantityValue(ob) {
+    if (typeof ob != 'undefined' &&
+        typeof ob.valueQuantity != 'undefined' &&
+        typeof ob.valueQuantity.value != 'undefined' {
+          return ob.valueQuantity.value;
     } else {
       return undefined;
     }
