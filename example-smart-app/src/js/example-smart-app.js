@@ -15,10 +15,21 @@
                     type: 'Observation',
                     query: {
                       code: {
-                        $or: ['http://loinc.org|8302-2',
-                              'http://loinc.org|3137-7',
-                              'http://loinc.org|29463-7',
-                              'http://loinc.org|3141-9']
+                            $or: [
+                                'http://loinc.org|8302-2',     // Height
+                                'http://loinc.org|3137-7',     // Height [measured]
+                                'http://loinc.org|3138-5',     // Height [stated]
+                                'http://loinc.org|8308-9',     // Height [standing]
+                                'http://loinc.org|8306-3',     // Height [lying]
+                                'http://loinc.org|8301-4',     // Height [estimated]
+
+                                'http://loinc.org|29463-7',    // Weight
+                                'http://loinc.org|3141-9',     // Weight [measured]
+                                'http://loinc.org|3142-7',     // Weight [stated]
+                                'http://loinc.org|75292-3',    // Weight [usual]
+                                'http://loinc.org|8335-2',     // Weight [estimated]
+                                'http://loinc.org|8351-9',     // Weight [measured, without clothes]
+                            ]
                       }
                     }
         });
@@ -36,8 +47,8 @@
             lname = patient.name[0].family.join(' ');
           }
 
-          var height = byCodes('8302-2', '3137-7');
-          var weight = byCodes('29463-7', '3141-9');
+          var height = byCodes('8302-2', '3137-7', '3138-5', '8308-9', '8306-3', '8301-4');
+          var weight = byCodes('29463-7', '3141-9', '3142-7', '75292-3', '8335-2', '8351-9');
 
           var p = defaultPatient();
           p.birthdate = patient.birthDate;
