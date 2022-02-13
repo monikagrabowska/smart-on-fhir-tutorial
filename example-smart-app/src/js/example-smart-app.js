@@ -11,7 +11,6 @@
       if (smart.hasOwnProperty('patient')) {
         var patient = smart.patient;
         var pt = patient.read();
-        var parseTime = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
         var obv = smart.patient.api.fetchAll({
                     type: 'Observation',
                     query: {
@@ -22,31 +21,6 @@
                               'http://loinc.org|3141-9']
                       }
                     }
-                  }).then(function(bmis) {
-                    var data = [];
-                    var datas = [];
-                    var datass = [];
-                    var x = [];
-                    var height = 0;
-                    var weight = 0;
-                  bmis.data.entry.forEach(function(bmi) {
-                    var bmii= bmi.resource.component;
-                    date = bmi.resource.effectiveDateTime
-                    dateFormat = date.substring(0, date.length - 6)
-                    dateFormat =  parseTime(dateFormat)
-
-                  x.push(dateFormat)
-
-                  bmii.forEach(function(b){
-
-                    if(b.code.coding[0].code=="8302-2"){
-                      datas.push(b.valueQuantity.value)
-                      height = b.valueQuantity.value
-                    }
-                    if(b.code.coding[0].code == "29463-7"){
-                      data.push(b.valueQuantity.value)}
-                      weight = b.valueQuantity.value
-                    })
         });
 
         $.when(pt, obv).fail(onError);
@@ -54,7 +28,6 @@
         $.when(pt, obv).done(function(patient, obv) {
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
-
           var fname = '';
           var lname = '';
 
@@ -95,8 +68,6 @@
       gender: {value: ''},
       birthdate: {value: ''},
       height: {value: ''},
-      systolicbp: {value: ''},
-      diastolicbp: {value: ''},
       weight: {value: ''},
       bmi: {value: ''},
     };
@@ -131,8 +102,6 @@
     $('#gender').html(p.gender);
     $('#birthdate').html(p.birthdate);
     $('#height').html(p.height);
-    $('#systolicbp').html(p.systolicbp);
-    $('#diastolicbp').html(p.diastolicbp);
     $('#weight').html(p.weight);
     $('#bmi').html(p.bmi);
   };
